@@ -18,4 +18,5 @@
     <string name="sign_up_hint_password">Sua senha</string>
     <string name="sign_up_hint_phone">(88) 9 9988-7766</string>
     <string name="sign_up_confirm_btn">Cadastre-me!</string>
+    <string name="sign_up_toast_something_wrong">Algo de errado nao deu certo D:</string>
 </resources>

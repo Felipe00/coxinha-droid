@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import br.com.interaje.felipe.coxinhadroid.R;
+import br.com.interaje.felipe.coxinhadroid.models.Admin;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -32,8 +34,17 @@ public class SignUpActivity extends AppCompatActivity {
         String phone = edtxtPhone.getText().toString();
 
         if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty() && !phone.isEmpty()) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            Admin adminUser = new Admin();
+            adminUser.setName(name);
+            adminUser.setEmail(email);
+            adminUser.setPassword(password);
+            adminUser.setPhone(phone);
+            if (adminUser.save() > 0) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            } else {
+                Toast.makeText(this, R.string.sign_up_toast_something_wrong, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

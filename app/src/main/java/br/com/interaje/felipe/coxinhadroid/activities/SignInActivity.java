@@ -7,7 +7,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.List;
+
 import br.com.interaje.felipe.coxinhadroid.R;
+import br.com.interaje.felipe.coxinhadroid.models.Admin;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -36,9 +39,15 @@ public class SignInActivity extends AppCompatActivity {
             // Se a senha eh diferente de vazio e maior ou igual a 4 ===> Verdadeiro
             if (!password.isEmpty() && password.length() >= 4) {
                 // Se a combinaçao Email + Senha estiver correta. ===> Verdadeiro
-                if (email.equals("a@a.com") && password.equals("1234")){
-                    startActivity(new Intent(this, MainActivity.class));
-                    finish();
+                List<Admin> adminList = Admin.find(Admin.class, "email = ? and limit 2", email);
+                if (adminList.size() > 0) {
+                    Admin adminDb = adminList.get(0);
+                    if (adminDb.getPassword().equals(password)) {
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(this, R.string.sign_in_toast_invalid_email_password, Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(this, R.string.sign_in_toast_invalid_email_password, Toast.LENGTH_SHORT).show();
                 }
