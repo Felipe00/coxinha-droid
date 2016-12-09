@@ -3,14 +3,20 @@ package br.com.interaje.felipe.coxinhadroid.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import java.util.List;
 
 import br.com.interaje.felipe.coxinhadroid.R;
 import br.com.interaje.felipe.coxinhadroid.models.Admin;
+import cz.msebera.android.httpclient.Header;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -38,6 +44,9 @@ public class SignInActivity extends AppCompatActivity {
         if (email.contains("@") && email.contains(".")) {
             // Se a senha eh diferente de vazio e maior ou igual a 4 ===> Verdadeiro
             if (!password.isEmpty() && password.length() >= 4) {
+
+                doLogin(email, password);
+                /*
                 // Se a combinaçao Email + Senha estiver correta. ===> Verdadeiro
                 List<Admin> adminList = Admin.find(Admin.class, "email = ? and limit 2", email);
                 if (adminList.size() > 0) {
@@ -50,7 +59,7 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(this, R.string.sign_in_toast_invalid_email_password, Toast.LENGTH_SHORT).show();
-                }
+                }*/
             } else {
                 Toast.makeText(this, R.string.sign_in_toast_short_password, Toast.LENGTH_SHORT).show();
             }
@@ -58,5 +67,27 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.sign_in_toast_invalid_email, Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void doLogin(String email, String password) {
+        AsyncHttpClient clientHttp = new AsyncHttpClient();
+
+        RequestParams params = new RequestParams();
+        params.add("id", "1");
+        params.add("email", email);
+        params.add("password", password);
+
+        clientHttp.get("http://192.168.1.77:3000/users/login", params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d("SIGN_IN_ACT", "Sucesso!" + new String (responseBody));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                String s = new String (responseBody);
+                Log.d("SIGN_IN_ACT", "Falhou :(" + s);
+            }
+        });
     }
 }
